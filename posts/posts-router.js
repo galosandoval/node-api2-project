@@ -1,14 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const Posts = require("../data/seeds/01-posts");
+const Posts = require("../data/db");
 
 router.get("/", (req, res) => {
-  const query = req.query;
-  console.log(query);
-
   Posts.find(query)
     .then((posts) => {
-      res.status(200).json({ query: req.query, data: posts });
+      res.status(200).json({ data: posts });
     })
     .catch((error) => {
       console.log(error);
