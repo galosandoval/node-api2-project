@@ -9,6 +9,7 @@
     },
     "dependencies": {
         "knex": "^0.21.2",
+        "shortid": "^2.2.15",
         "sqlite3": "^5.0.0"
     },
     "devDependencies": {
