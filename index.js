@@ -2,6 +2,10 @@ const express = require('express')
 const server = express()
 const shortid = require('shortid')
 
+const Posts = require('./data/seeds/01-posts')
+const postsRouter = require('./posts/posts-router')
+const commentsRouter = require('./comments/comments-router')
+
 const blogPosts = [
   {
     title: "The post title", // String, required
@@ -20,3 +24,12 @@ const comment = [
   }
 ]
 
+server.use('/api/posts', postsRouter)
+// server.use('/api/posts/:id/comments', commentsRouter)
+
+server.get('/', (req, res) => {
+  res.status(200).json({message: 'Successfully used GET'})
+})
+
+const port = 8000
+server.listen(port, () => console.log('Listening on Port 8000'))
