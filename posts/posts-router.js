@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Posts = require("../data/db");
-const { findById, findPostComments, remove } = require("../data/db");
+const { findById, findPostComments, remove, update } = require("../data/db");
 
 // GET
 router.get("/", (req, res) => {
@@ -95,8 +95,59 @@ router.delete("/:id", (req, res) => {
       }
     })
     .catch((error) => {
-      res.status(500).json({ error: "The post could not be removed" });
+      res.status(500).json({ error: "The post could not be removed" }).end();
     });
 });
 
+// PUT
+
+// router.put("/:id", (req, res) => {
+//   const id = Number(req.params.id);
+//   update(id)
+//     .then((post) => {
+//       if (!req.body.title || !req.body.contents) {
+//         res
+//           .status(400)
+//           .json({
+//             errorMessage: "Please provide title and contents for the post.",
+//           })
+//           .end();
+//       } else if (!post) {
+//         res
+//           .status(404)
+//           .json({ message: "The post with the specified ID does not exist." });
+//       } else {
+//         res.status(200).json(post);
+//       }
+//     })
+//     .catch((error) => {
+//       res
+//         .status(500)
+//         .json({ error: "The post information could not be modified." })
+//         .end();
+//     });
+// });
+router.put('/:id', (req, res) => {
+  const { title, contents } = req.body
+  const id = Number(req.params.id)
+
+  if (!title || !contents) {
+    res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
+  } else {
+    Posts.update(id, req.body)
+    .then(update => {
+      if (!update) {
+        res.status(404).json({ errorMessage: "The post with the specified ID does not exist." })
+      } else {
+        Posts.findById(req.params.id) 
+        .then(post => {
+          res.status(201).json(post)
+        })
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ errorMessage: "The information could not be retrieved"})
+    })
+  }
+})
 module.exports = router;
